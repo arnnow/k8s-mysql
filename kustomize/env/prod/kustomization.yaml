@@ -7,8 +7,11 @@ bases:
 patchesStrategicMerge:
   - database-password.yaml
   - volume-mysql.yaml
+  - ressource-limit.yaml
 
 namePrefix: prod-
+commonLabels:
+ tier: prod
 commonAnnotations:
   documentation: "https://github.com/arnnow/k8s-mysql/tree/master/kustomize"
 
