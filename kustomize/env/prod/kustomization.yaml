@@ -9,6 +9,8 @@ patchesStrategicMerge:
   - volume-mysql.yaml
 
 namePrefix: prod-
+commonAnnotations:
+  documentation: "https://github.com/arnnow/k8s-mysql/tree/master/kustomize"
 
 secretGenerator:
 - name: mysecrets
