@@ -6,12 +6,12 @@ Set Volume using [hostPath](https://kubernetes.io/docs/concepts/storage/volumes/
 
 You can set the [PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes) & [PersistentVolumeClaim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims).
 ```bash
-{21:11}~/k8s-nginx-php:master ✗ ➭ kubectl apply -f definitions/storages/mysql_pv_volume.yaml
+{21:11}~/k8s-mysql:master ✗ ➭ kubectl apply -f definitions/storages/mysql_pv_volume.yaml
 persistentvolume/mysql-pv-volume created
-{21:11}~/k8s-nginx-php:master ✗ ➭ kubectl apply -f definitions/storages/mysql_pv_claim.yaml
+{21:11}~/k8s-mysql:master ✗ ➭ kubectl apply -f definitions/storages/mysql_pv_claim.yaml
 persistentvolumeclaim/mysql-pv-claim created
 
-{21:12}~/k8s-nginx-php:master ✗ ➭ kubectl get pv,pvc -o wide
+{21:12}~/k8s-mysql:master ✗ ➭ kubectl get pv,pvc -o wide
 NAME                               CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                    STORAGECLASS   REASON   AGE   VOLUMEMODE
 persistentvolume/mysql-pv-volume   1Gi        RWO            Retain           Bound    default/mysql-pv-claim   manual                  63s   Filesystem
 
@@ -29,10 +29,10 @@ dGhpc2lzc2VjdXJl
 You can add your base64 encoded secret to the yaml file and apply it
 *This is clearly not secure and need a proper secret management tool*
 ```bash
-{21:12}~/k8s-nginx-php:master ✗ ➭ kubectl apply -f definitions/secrets/mysql_secret.yaml
+{21:12}~/k8s-mysql:master ✗ ➭ kubectl apply -f definitions/secrets/mysql_secret.yaml
 secret/mysql-secrets created
 
-{21:13}~/k8s-nginx-php:master ✗ ➭ kubectl get secrets -o wide
+{21:13}~/k8s-mysql:master ✗ ➭ kubectl get secrets -o wide
 NAME                  TYPE                                  DATA   AGE
 mysql-secrets         Opaque                                1      9s
 
@@ -40,10 +40,10 @@ mysql-secrets         Opaque                                1      9s
 
 ## Set [Services](https://kubernetes.io/docs/concepts/services-networking/service/)
 ```bash
-{21:15}~/k8s-nginx-php:master ✗ ➭ kubectl apply -f definitions/mysql_service.yaml
+{21:15}~/k8s-mysql:master ✗ ➭ kubectl apply -f definitions/mysql_service.yaml
 service/mysql created
 
-{21:15}~/k8s-nginx-php:master ✗ ➭ kubectl get svc -o wide
+{21:15}~/k8s-mysql:master ✗ ➭ kubectl get svc -o wide
 NAME         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE     SELECTOR
 kubernetes   ClusterIP      10.96.0.1       <none>        443/TCP        6m57s   <none>
 mysql        ClusterIP      10.111.20.106   <none>        3306/TCP       33s     app=mysql,tier=backend
@@ -52,10 +52,10 @@ mysql        ClusterIP      10.111.20.106   <none>        3306/TCP       33s    
 
 ## Launch [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 ```bash
-{21:16}~/k8s-nginx-php:master ✗ ➭ kubectl apply -f definitions/mysql_deployment.yaml
+{21:16}~/k8s-mysql:master ✗ ➭ kubectl apply -f definitions/mysql_deployment.yaml
 deployment.apps/mysql created
 
-{21:16}~/k8s-nginx-php:master ✗ ➭ kubectl get deployments -o wide
+{21:16}~/k8s-mysql:master ✗ ➭ kubectl get deployments -o wide
 NAME    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES        SELECTOR
 mysql   0/1     1            0           30s   mysql        mysql:5.6     app=mysql,tier=backend
 ```
@@ -63,13 +63,13 @@ mysql   0/1     1            0           30s   mysql        mysql:5.6     app=my
 # Checking your deployments
 ## Checking on your pods
 ```
-{21:18}~/k8s-nginx-php:master ✗ ➭ kubectl get pods
+{21:18}~/k8s-mysql:master ✗ ➭ kubectl get pods
 NAME                     READY   STATUS              RESTARTS   AGE
 mysql-575c4778f5-jfzbk   0/1     ContainerCreating   0          2m35s
 ```
 ## Checking Mysql
 ```
-{21:22}~/Seafile/Priv/Soft/k8s/k8s-nginx-php:master ✗ ➭ kubectl describe pods mysql-575c4778f5-jfzbk
+{21:22}~/Seafile/Priv/Soft/k8s/k8s-mysql:master ✗ ➭ kubectl describe pods mysql-575c4778f5-jfzbk
 Name:         mysql-575c4778f5-jfzbk
 Namespace:    default
 Priority:     0
@@ -131,7 +131,7 @@ Events:
 The mysql pod has been started.
 Data should be in 
 ```bash
-{21:21}~/k8s-nginx-php:master ✗ ➭ minikube ssh
+{21:21}~/k8s-mysql:master ✗ ➭ minikube ssh
                          _             _
             _         _ ( )           ( )
   ___ ___  (_)  ___  (_)| |/')  _   _ | |_      __
@@ -150,7 +150,7 @@ drwx------ 2 999 999     1100 Feb 11 20:21 performance_schema
 ```
 Testing our Mysql pod
 ```
-{21:33}~/k8s-nginx-php:master ✗ ➭ kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -pthisisnotsecure
+{21:33}~/k8s-mysql:master ✗ ➭ kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -pthisisnotsecure
 If you don't see a command prompt, try pressing enter.
 
 mysql> show databases;
@@ -170,9 +170,9 @@ We will here create a docker image via a dockerfile and use it directly in minik
 the dockerfile is here
 ```bash
 # Set docker env
-{22:17}~/k8s-nginx-php/loadtest/my_mysqlslap:master ✗ ➭ eval $(minikube docker-env)
+{22:17}~/k8s-mysql/loadtest/my_mysqlslap:master ✗ ➭ eval $(minikube docker-env)
 
-{22:17}~/k8s-nginx-php/loadtest/my_mysqlslap:master ✗ ➭ docker build -t mysqlslap:v1 .
+{22:17}~/k8s-mysql/loadtest/my_mysqlslap:master ✗ ➭ docker build -t mysqlslap:v1 .
 Sending build context to Docker daemon  3.072kB
 Step 1/4 : FROM debian:buster
 ...
@@ -181,7 +181,7 @@ Successfully tagged mysqlslap:v1
 ```
 Your image should be present in minikube
 ```bash
-{22:23}~/Seafile/Priv/Soft/k8s/k8s-nginx-php:master ✗ ➭ minikube ssh
+{22:23}~/k8s-mysql:master ✗ ➭ minikube ssh
                          _             _
             _         _ ( )           ( )
   ___ ___  (_)  ___  (_)| |/')  _   _ | |_      __
@@ -196,11 +196,35 @@ mysqlslap                                 v1                  72d2ca4d287b      
 ## Importing the [employee](https://dev.mysql.com/doc/index-other.html) database & Running the test
 ```
 # Run in minikube
-kubectl apply -f loadtest/my_mysqlslap/mysqlslap_job.yaml
+{21:15}~/k8s-mysql:master ✓ ➭ kubectl apply -f loadtest/my_mysqlslap/mysqlslap_job.yaml
+job.batch/mysqlslap created
 
-# Check that it's running
-kubectl get jobs,pods
+{21:27}~/k8s-mysql:master ✗ ➭ kubectl get pods,svc,deployment,secret,job -o wide
+NAME                         READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+pod/mysql-575c4778f5-vjx2c   1/1     Running   0          13m   172.17.0.4   minikube   <none>           <none>
+pod/mysqlslap-fsjkk          1/1     Running   0          3s    172.17.0.5   minikube   <none>           <none>
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP    16m   <none>
+service/mysql        ClusterIP   10.101.16.211   <none>        3306/TCP   13m   app=mysql,tier=backend
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES      SELECTOR
+deployment.apps/mysql   1/1     1            1           13m   mysql        mysql:5.6   app=mysql,tier=backend
+
+NAME                         TYPE                                  DATA   AGE
+secret/default-token-dnvkc   kubernetes.io/service-account-token   3      16m
+secret/mysql-secrets         Opaque                                1      2m46s
+
+NAME                  COMPLETIONS   DURATION   AGE   CONTAINERS   IMAGES         SELECTOR
+job.batch/mysqlslap   0/1           3s         3s    mysqlslap    mysqlslap:v1   controller-uid=b6427d47-8525-4c95-b109-522541826899
 
 # Checking the logs
-kubectl logs -f pod/mysqlslap-xxxx
+{21:27}~/k8s-mysql:master ✗ ➭ kubectl logs -f pod/mysqlslap-fsjkk
+...
+Benchmark
+        Average number of seconds to run all queries: 1.168 seconds
+        Minimum number of seconds to run all queries: 0.889 seconds
+        Maximum number of seconds to run all queries: 1.426 seconds
+        Number of clients running queries: 5
+        Average number of queries per client: 1
 ```
