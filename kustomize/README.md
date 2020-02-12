@@ -51,3 +51,20 @@ NAME                                        STATUS   VOLUME                 CAPA
 persistentvolumeclaim/dev-mysql-pv-claim    Bound    dev-mysql-pv-volume    1Gi        RWO            manual         67s   Filesystem
 persistentvolumeclaim/prod-mysql-pv-claim   Bound    prod-mysql-pv-volume   1Gi        RWO            manual         74s   Filesystem
 ```
+Delete everything
+```
+{22:30}~/k8s-mysql/kustomize/env/dev:master ✗ ➭ kubectl delete -k ./
+secret "dev-mysecrets-bbb45452ht" deleted
+service "dev-mysql" deleted
+deployment.apps "dev-mysql" deleted
+persistentvolume "dev-mysql-pv-volume" deleted
+persistentvolumeclaim "dev-mysql-pv-claim" deleted
+
+{22:30}~/k8s-mysql/kustomize/env/dev:master ✗ ➭ cd ../prod
+{22:31}~/k8s-mysql/kustomize/env/prod:master ✗ ➭ kubectl delete -k ./
+secret "prod-mysecrets-6dg4g995m8" deleted
+service "prod-mysql" deleted
+deployment.apps "prod-mysql" deleted
+persistentvolume "prod-mysql-pv-volume" deleted
+persistentvolumeclaim "prod-mysql-pv-claim" deleted
+```
